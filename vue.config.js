@@ -4,16 +4,6 @@ module.exports = {
   baseUrl: './',
   devServer: {
     historyApiFallback: true,
-    noInfo: true,
-    proxy: {
-      '/api': {
-        //是否允许跨域
-        changeOrigin: true,
-        target: 'https://cn.bing.com',
-        pathRewrite: {
-          '^/api': ''
-        }
-      }
-    }
+    noInfo: true
   }
 }

@@ -32,7 +32,7 @@
       </el-main>
       <el-footer></el-footer>
     </el-container>
-    <p class="author">CREATED BY LOKKA</p>
+    <p class="author">CREATED BY ALOKKA</p>
   </div>
 </template>
 
