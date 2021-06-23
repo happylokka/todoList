@@ -18,7 +18,7 @@ export default {
     todoList,
   },
   created() {
-    this.$jsonp("http://bing.ioliu.cn/v1").then((res) => {
+    this.$jsonp("https://bing.ioliu.cn/v1").then((res) => {
       this.imgUrl = res.data.url;
     });
   },
