@@ -236,6 +236,7 @@ export default {
   }
   .el-main{
     text-align: center;
+    margin: 0.5rem 0;
     width: 100%;
     height: auto;
     padding: 0;
