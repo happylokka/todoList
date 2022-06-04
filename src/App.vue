@@ -5,12 +5,8 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 import axios from 'axios'
 import todoList from "./components/todoList.vue"
-=======
-import todoList from "./components/todoList.vue";
->>>>>>> bc7d2a81012cf7ddcbf5d7c3e7b22defac341af5
 
 export default {
   name: "app",
@@ -23,8 +19,8 @@ export default {
     todoList,
   },
   created() {
-    this.$jsonp("https://bing.ioliu.cn/v1").then((res) => {
-      this.imgUrl = res.data.url;
+    axios.post("/api/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN").then((res) => {
+      this.imgUrl = `http://cn.bing.com${res.data.images[0].url}`;
     });
   },
 };
