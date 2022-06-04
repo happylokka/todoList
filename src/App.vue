@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import todoList from "./components/todoList.vue";
+import axios from 'axios'
+import todoList from "./components/todoList.vue"
 
 export default {
   name: "app",

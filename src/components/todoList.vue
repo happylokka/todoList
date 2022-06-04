@@ -19,15 +19,17 @@
           </div>
           <div class="targetBox" v-else>
             <i class="el-icon-plus" @click="addTopic"></i>
-            <p>进行中：{{todolist.length}}</p> <p>已完成：{{donenum}}</p>
-            <ul class="list-group">
-              <li class="list-group-item" v-for="(todo,index) in todolist" :key="index">
+            <div class="statusBox">
+              <p>进行中：{{todolist.length}}</p> <p>已完成：{{donenum}}</p>
+            </div>
+            <transition-group tag="ul" name="list" class="list-group">
+              <li class="list-group-item" v-for="(todo,index) in todolist" :key="todo" draggable="true" @dragstart="dragStart(todo, index)" @dragenter="dragEnter($event, index)" @dragend="dragEnd($event, index)" @dragover.prevent>
                 <el-checkbox size="mini" v-model="todo.done"></el-checkbox>
                 <!-- <input type="text" v-model="todo.content"> -->
                 <p :class="{done: todolist[index].done}"  @dblclick="isDone(index)">{{`${index + 1}. ${todo.content}`}}</p>
                 <i class="el-icon-close" @click="del(index)"></i>
               </li>
-            </ul>
+            </transition-group>
           </div>  
       </el-main>
       <el-footer></el-footer>
@@ -52,7 +54,44 @@ export default {
         done: false
       },
       tt:10,
-      todolist: []
+      todolist: [],
+      oldIndex: '',
+      oldData: '',
+      newIndex: ''
+    }
+  },
+  computed:{
+    text:function () {
+      let hello = '';
+      if(9.5 < new Date().getHours() && new Date().getHours() < 10){
+        hello = '上班啦,又是元气满满的一天！'
+      }else if(new Date().getHours() == 12) {
+        hello = '干饭啦！'
+      }else if(new Date().getHours() == 20) {
+        hello = '下班啦！！！下班啦！！！下班啦！！！'
+      }else if(new Date().getHours() < 12) {
+        hello = '上午好'
+      }else{
+        hello = '下午好'
+      }
+      return hello;
+    },
+    donenum:function () {
+      return this.todolist.filter(item => item && item.done).length
+    }
+  },
+  watch:{
+    todolist:{ // watch默认只监控一层的数据变化，深度监控
+        handler(){ // 默认写成函数 就相当于默认写了个handler
+            localStorage.setItem("data",JSON.stringify(this.todolist))
+            if(this.todolist.length == 0){
+              this.show = true;
+            }
+        },
+        deep:true
+    },
+    name:function () {
+      localStorage.setItem("name",JSON.stringify(this.name))
     }
   },
   created(){
@@ -73,6 +112,21 @@ export default {
 
   },
   methods:{
+    dragStart (val, i) {
+      this.oldIndex = i
+      this.oldData = val
+    },
+    dragEnter (e, i) {
+      this.newIndex = i
+    },
+    dragEnd () {
+      let newItems = [...this.todolist]
+        // 删除老的节点
+        newItems.splice(this.oldIndex, 1)
+        // 在列表中目标位置增加新的节点
+        newItems.splice(this.newIndex, 0, this.oldData)
+        this.todolist = [...newItems]
+    },
     formatDateTime(time){    
       let year = new Date(time).getFullYear();
       let month =new Date(time).getMonth() + 1 < 10? "0" + (new Date(time).getMonth() + 1): new Date(time).getMonth() + 1;
@@ -125,45 +179,12 @@ export default {
     addTopic(){
       this.show = !this.show;
     }
-  },
-  computed:{
-    text:function () {
-      let hello = '';
-      if(9.5 < new Date().getHours() && new Date().getHours() < 10){
-        hello = '上班啦,又是元气满满的一天！'
-      }else if(new Date().getHours() == 12) {
-        hello = '干饭啦！'
-      }else if(new Date().getHours() == 20) {
-        hello = '下班啦！！！下班啦！！！下班啦！！！'
-      }else if(new Date().getHours() < 12) {
-        hello = '上午好'
-      }else{
-        hello = '下午好'
-      }
-      return hello;
-    },
-    donenum:function () {
-      return this.todolist.filter(item => item.done).length
-    }
-  },
-  watch:{
-    todolist:{ // watch默认只监控一层的数据变化，深度监控
-        handler(){ // 默认写成函数 就相当于默认写了个handler
-            localStorage.setItem("data",JSON.stringify(this.todolist))
-            if(this.todolist.length == 0){
-              this.show = true;
-            }
-        },
-        deep:true
-    },
-    name:function () {
-      localStorage.setItem("name",JSON.stringify(this.name))
-    }
-  },
+  }
 }
 </script>
 
 <style lang="less" scoped>
+
 .el-container{
     width: 72%;
     height: auto;
@@ -195,7 +216,7 @@ export default {
       p{
         display: inline;
         user-select: none;
-        font-size: 0.3rem;
+        font-size: 0.26rem;
         color: #fff;    
         vertical-align: text-bottom;
       }
@@ -245,7 +266,7 @@ export default {
       }
     }
     .targetBox{    
-      width: 6rem;
+      width: 60%;
       margin: 0 auto;
       .el-icon-plus{
         width: 0.3rem;
@@ -256,31 +277,32 @@ export default {
         padding-bottom: 20px;
         cursor: pointer;
       }
-      p{
-        text-align: center;
-        display: inline-block;
-        padding: 0.2rem 0;
-        font-size: 0.2rem;
-        &:nth-child(2){
-          margin-right: 20px;
+      .statusBox {
+        p {
+          display: inline-block;
+          padding: 0.2rem 0;
+          font-size: 0.2rem;
+          &:nth-child(1){
+            margin-right: 20px;
+          }
         }
       }
       .list-group{
         .list-group-item{
           padding-top: 15px;
-          height: 0.5rem;
+          height: auto;
           line-height: 0.5rem;
           font-size: 0.28rem;
           display: flex;    
           align-items: center;
           .el-checkbox{
-            margin: 0 0.2rem;
+            width: 10%;
           }
           p{
+            width: 80%;
             display: inline-block;   
-            background: 0;       
-            height: 0.5rem;
-            font-size: 0.3rem;
+            background: 0;
+            font-size: 0.26rem;
             color: #fff;  
             flex: 1;
             user-select: none;
@@ -290,7 +312,7 @@ export default {
             }
           }
           .el-icon-close{
-            margin: 0 0.2rem;
+            width: 10%;
             cursor: pointer;
             &:hover{
               color: #ef5f65;
@@ -315,12 +337,14 @@ export default {
   opacity: 0;
 }
 
-
 @media screen and (max-width: 768px) {
     .targetBox {
         width: 100%;
     }
 }
 
+.list-move {
+  transition: transform .3s;
+}
 
 </style>
