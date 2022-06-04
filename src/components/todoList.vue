@@ -15,7 +15,7 @@
       <el-main>
           <div class="taskBox" v-if="todolist.length == 0 || show">
             <p class="title">今天想要完成的目标是 ？</p>
-            <input type="text" class="form-control" @blur="add" @keyup.13="add" v-model="newtodo.content">
+            <input type="text" class="form-control" @keyup.13="add" v-model="content">
           </div>
           <div class="targetBox" v-else>
             <i class="el-icon-plus" @click="addTopic"></i>
@@ -23,7 +23,7 @@
               <p>进行中：{{todolist.length}}</p> <p>已完成：{{donenum}}</p>
             </div>
             <transition-group tag="ul" name="list" class="list-group">
-              <li class="list-group-item" v-for="(todo,index) in todolist" :key="todo" draggable="true" @dragstart="dragStart(todo, index)" @dragenter="dragEnter($event, index)" @dragend="dragEnd($event, index)" @dragover.prevent>
+              <li :class="['list-group-item', { 'is-dragover': index === newIndex }]" v-for="(todo,index) in todolist" :key="todo.id" :id="todo.id" draggable="true" @dragstart="dragStart(todo, index)" @dragover.prevent="dragOver(index)" @dragend="dragEnd($event, index)">
                 <el-checkbox size="mini" v-model="todo.done"></el-checkbox>
                 <!-- <input type="text" v-model="todo.content"> -->
                 <p :class="{done: todolist[index].done}"  @dblclick="isDone(index)">{{`${index + 1}. ${todo.content}`}}</p>
@@ -32,7 +32,6 @@
             </transition-group>
           </div>  
       </el-main>
-      <el-footer></el-footer>
     </el-container>
     <p class="author">CREATED BY ALOKKA</p>
   </div>
@@ -48,13 +47,10 @@ export default {
       week: null,
       flag: true,
       show: false,
-      name:"",
-      newtodo: {
-        content: '',
-        done: false
-      },
-      tt:10,
+      name: "",
+      content: '',
       todolist: [],
+      id: 0,
       oldIndex: '',
       oldData: '',
       newIndex: ''
@@ -116,7 +112,7 @@ export default {
       this.oldIndex = i
       this.oldData = val
     },
-    dragEnter (e, i) {
+    dragOver (i) {
       this.newIndex = i
     },
     dragEnd () {
@@ -125,7 +121,8 @@ export default {
         newItems.splice(this.oldIndex, 1)
         // 在列表中目标位置增加新的节点
         newItems.splice(this.newIndex, 0, this.oldData)
-        this.todolist = [...newItems]
+      this.todolist = [...newItems]
+        this.newIndex = ''
     },
     formatDateTime(time){    
       let year = new Date(time).getFullYear();
@@ -157,12 +154,11 @@ export default {
     empty(){
       alert(1);
     },
-    add(){
-      if(this.newtodo.content){
-        this.todolist.push(this.newtodo);
-        this.show = false;
-        this.newtodo = {content: '',done: false}
-      }
+    add () {
+      this.id++
+      this.todolist.push({ id: this.id, content: this.content, done: false});
+      this.show = false;
+      this.content = ''
     },
     named(){
       this.$refs.name.blur();
@@ -243,7 +239,6 @@ export default {
     width: 100%;
     height: auto;
     padding: 0;
-    margin-top: 0.5rem;
     overflow: hidden;
     .taskBox{ 
       text-align: center;   
@@ -267,7 +262,7 @@ export default {
     }
     .targetBox{    
       width: 60%;
-      margin: 0 auto;
+      margin: 0.5rem auto;
       .el-icon-plus{
         width: 0.3rem;
         height: 0.3rem;
@@ -345,6 +340,36 @@ export default {
 
 .list-move {
   transition: transform .3s;
+}
+.list-group-item {
+  
+    position: relative;
+}
+.list-group-item.is-dragover::before {
+    content: "";
+
+    position: absolute;
+
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+
+    background-color: #0c6bc9;
+}
+
+.list-group-item.is-dragover::after {
+    content: "";
+
+    position: absolute;
+    bottom: -8px;
+    left: -6px;
+    border: 3px solid #0c6bc9;
+    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+
+    background-color: #fff;
 }
 
 </style>
