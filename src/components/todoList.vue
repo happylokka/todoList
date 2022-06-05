@@ -48,9 +48,9 @@ export default {
       flag: true,
       show: false,
       name: "",
+      id: 0,
       content: '',
       todolist: [],
-      id: 0,
       oldIndex: '',
       oldData: '',
       newIndex: ''
@@ -88,7 +88,10 @@ export default {
     },
     name:function () {
       localStorage.setItem("name",JSON.stringify(this.name))
-    }
+    },
+    id:function () {
+      localStorage.setItem("id",JSON.stringify(this.id))
+    },
   },
   created(){
 
@@ -97,6 +100,7 @@ export default {
 
     // 如果localstorage中有就用有的 没有就用this.todolist
     this.name = JSON.parse(localStorage.getItem("name")) || this.name;
+    this.id = JSON.parse(localStorage.getItem("id")) || this.id;
     this.todolist = JSON.parse(localStorage.getItem("data")) || this.todolist;
 
   },
