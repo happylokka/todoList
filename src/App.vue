@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :style="{ backgroundImage: 'url(' + imgUrl + ')' }">
+  <div id="app">
     <todoList></todoList>
   </div>
 </template>
@@ -9,19 +9,9 @@ import todoList from "./components/todoList.vue"
 
 export default {
   name: "app",
-  data() {
-    return {
-      imgUrl: "",
-    };
-  },
   components: {
     todoList,
-  },
-  created() {
-    this.$jsonp("https://bing.ioliu.cn/v1").then((res) => {
-      this.imgUrl = res.data.url;
-    });
-  },
+  }
 };
 </script>
 
@@ -33,12 +23,9 @@ export default {
   left: 0;
   right: 0;
   overflow-y: auto;
-  background: url("./assets/images/bg.jpg") 100% 100% no-repeat;
+  background: url("https://bing.img.run/uhd.php") 100% 100% no-repeat;
   background-size: cover;
   z-index: -1;
-  // -webkit-filter: blur(5px);
-  // filter: blur(15px);
-  // transform: scale(1.2);
 }
 #app::-webkit-scrollbar {
   width: 5px;
