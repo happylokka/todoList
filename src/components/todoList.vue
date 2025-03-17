@@ -20,7 +20,7 @@
           <input ref="inputRef" type="text" class="form-control" @keyup.13="add" v-model="content">
         </div>
         <div class="targetBox" v-else>
-          <i class="el-icon-plus" @click="addTopic"></i>
+          <i class="plusBtn" @click="addTopic">＋</i>
           <div class="statusBox">
             <p>进行中：{{ todolist.length }}</p>
             <p>已完成：{{ donenum }}</p>
@@ -30,10 +30,10 @@
               :key="todo.id" :id="todo.id" draggable="true" @dragstart="dragStart(todo, index)"
               @dragover.prevent="dragOver(index)" @dragend="dragEnd($event, index)">
               <div class="checkboxBtn">
-                <input @change="isDone(index)"  :checked="todo.done" class="inp-cbx" :id="'cbx-' + todo.id" type="checkbox"
-                  style="display: none;" />
+                <input @change="isDone(index)" :checked="todo.done" class="inp-cbx" :id="'cbx-' + todo.id"
+                  type="checkbox" style="display: none;" />
                 <label class="cbx" :for="'cbx-' + todo.id">
-                  <span >
+                  <span>
                     <svg width="12px" height="9px" viewbox="0 0 12 9">
                       <polyline points="1 5 4 8 11 1"></polyline>
                     </svg>
@@ -42,7 +42,7 @@
               </div>
               <p :class="{ done: todolist[index].done }" @dblclick="isDone(index)">{{ `${index + 1}. ${todo.content}` }}
               </p>
-              <i class="el-icon-close" @click="del(index)"></i>
+              <i class="closeBtn" @click="del(index)">×</i>
             </li>
           </transition-group>
         </div>
@@ -206,6 +206,7 @@ export default {
 .checkboxBtn {
   width: 10%;
 }
+
 .checkboxBtn .cbx {
   -webkit-user-select: none;
   user-select: none;
@@ -226,7 +227,7 @@ export default {
   border-radius: 50%;
   transform: scale(1);
   vertical-align: middle;
-  border: 1px solid #B9B8C3;
+  border: 2px solid #fff;
   transition: all 0.2s ease;
 }
 
@@ -387,12 +388,12 @@ export default {
       width: 70%;
       margin: 0.5rem auto;
 
-      .el-icon-plus {
-        width: 0.3rem;
-        height: 0.3rem;
+      .plusBtn {
+        width: 0.4rem;
+        height: 0.4rem;
         margin: 0 auto;
         display: block;
-        font-size: 0.3rem;
+        font-size: 0.4rem;
         padding-bottom: 20px;
         cursor: pointer;
       }
@@ -442,7 +443,8 @@ export default {
             }
           }
 
-          .el-icon-close {
+          .closeBtn {
+            font-size: 0.4rem;
             width: 10%;
             cursor: pointer;
 
