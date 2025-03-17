@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-container>
-      <el-header>
+    <div class="containerBox">
+      <div class="headerBox">
         <div class="timeBox">
           <p class="date">{{ date }}</p>
           <p class="time" @dblclick="change" v-show="flag">{{ time }}</p>
@@ -13,8 +13,8 @@
           <p>{{ text }}&nbsp;&nbsp;</p>
           <input type="text" :class="{ active: name }" @keyup.13="named" v-model="name" ref="name">
         </div>
-      </el-header>
-      <el-main>
+      </div>
+      <div class="mainBox">
         <div class="taskBox" v-if="todolist.length == 0 || show">
           <p class="title">今天想要完成的目标是 ？</p>
           <input ref="inputRef" type="text" class="form-control" @keyup.13="add" v-model="content">
@@ -46,8 +46,8 @@
             </li>
           </transition-group>
         </div>
-      </el-main>
-    </el-container>
+      </div>
+    </div>
     <p class="author">CREATED BY ALOKKA</p>
   </div>
 </template>
@@ -288,7 +288,7 @@ export default {
 
 
 <style lang="less" scoped>
-.el-container {
+.containerBox {
   width: 70%;
   max-width: 1500px;
   height: auto;
@@ -298,7 +298,7 @@ export default {
   backdrop-filter: blur(10px);
   border-radius: 25px;
 
-  .el-header {
+  .headerBox {
     text-align: center;
     height: auto !important;
 
@@ -352,7 +352,7 @@ export default {
     }
   }
 
-  .el-main {
+  .mainBox {
     text-align: center;
     margin: 0.3rem 0;
     width: 100%;

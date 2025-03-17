@@ -19,9 +19,6 @@ export default {
     todoList,
   },
   created() {
-    // this.$jsonp("https://bing.biturl.top/?resolution=UHD&format=json&index=0&mkt=zh-CN").then((res) => {
-    //   this.imgUrl = res.data.url;
-    // });
     axios.get('https://bing.biturl.top/?resolution=UHD&format=json&index=0&mkt=zh-CN')
         .then(res => {
           // 假设API返回的是图片URL字符串
@@ -44,9 +41,6 @@ export default {
   overflow-y: auto;
   background-size: cover;
   z-index: -1;
-  // -webkit-filter: blur(5px);
-  // filter: blur(15px);
-  // transform: scale(1.2);
 }
 #app::-webkit-scrollbar {
   width: 5px;
