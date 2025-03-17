@@ -17,7 +17,7 @@
       <el-main>
         <div class="taskBox" v-if="todolist.length == 0 || show">
           <p class="title">今天想要完成的目标是 ？</p>
-          <input type="text" class="form-control" @keyup.13="add" v-model="content">
+          <input ref="inputRef" type="text" class="form-control" @keyup.13="add" v-model="content">
         </div>
         <div class="targetBox" v-else>
           <i class="el-icon-plus" @click="addTopic"></i>
@@ -29,9 +29,18 @@
             <li :class="['list-group-item', { 'is-dragover': index === newIndex }]" v-for="(todo, index) in todolist"
               :key="todo.id" :id="todo.id" draggable="true" @dragstart="dragStart(todo, index)"
               @dragover.prevent="dragOver(index)" @dragend="dragEnd($event, index)">
-              <el-checkbox size="mini" v-model="todo.done"></el-checkbox>
-              <!-- <input type="text" v-model="todo.content"> -->
-              <p :class="{ done: todolist[index].done }" @dblclick="isDone(index)">{{`${index + 1}. ${todo.content}`}}
+              <div class="checkboxBtn">
+                <input @change="isDone(index)"  :checked="todo.done" class="inp-cbx" :id="'cbx-' + todo.id" type="checkbox"
+                  style="display: none;" />
+                <label class="cbx" :for="'cbx-' + todo.id">
+                  <span >
+                    <svg width="12px" height="9px" viewbox="0 0 12 9">
+                      <polyline points="1 5 4 8 11 1"></polyline>
+                    </svg>
+                  </span>
+                </label>
+              </div>
+              <p :class="{ done: todolist[index].done }" @dblclick="isDone(index)">{{ `${index + 1}. ${todo.content}` }}
               </p>
               <i class="el-icon-close" @click="del(index)"></i>
             </li>
@@ -114,7 +123,11 @@ export default {
 
     setInterval(() => {
       this.nowTime();
-    }, 1000);
+    }, 300);
+
+    if (this.$refs.inputRef) {
+      this.$refs.inputRef.focus();
+    }
 
   },
   methods: {
@@ -189,13 +202,101 @@ export default {
 }
 </script>
 
+<style>
+.checkboxBtn {
+  width: 10%;
+}
+.checkboxBtn .cbx {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+.checkboxBtn .cbx span {
+  display: inline-block;
+  vertical-align: middle;
+  transform: translate3d(0, 0, 0);
+}
+
+.checkboxBtn .cbx span:first-child {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transform: scale(1);
+  vertical-align: middle;
+  border: 1px solid #B9B8C3;
+  transition: all 0.2s ease;
+}
+
+.checkboxBtn .cbx span:first-child svg {
+  position: absolute;
+  z-index: 1;
+  top: 6px;
+  left: 4px;
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16px;
+  stroke-dashoffset: 16px;
+  transition: all 0.3s ease;
+  transition-delay: 0.1s;
+  transform: translate3d(0, 0, 0);
+}
+
+.checkboxBtn .cbx span:first-child:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: #506EEC;
+  display: block;
+  transform: scale(0);
+  opacity: 1;
+  border-radius: 50%;
+  transition-delay: 0.2s;
+}
+
+.checkboxBtn .cbx:hover span:first-child {
+  border-color: #3c53c7;
+}
+
+.checkboxBtn .inp-cbx:checked+.cbx span:first-child {
+  border-color: #3c53c7;
+  background: #3c53c7;
+  animation: check-15 0.6s ease;
+}
+
+.checkboxBtn .inp-cbx:checked+.cbx span:first-child svg {
+  stroke-dashoffset: 0;
+}
+
+.checkboxBtn .inp-cbx:checked+.cbx span:first-child:before {
+  transform: scale(2.2);
+  opacity: 0;
+  transition: all 0.6s ease;
+}
+
+@keyframes check-15 {
+  50% {
+    transform: scale(1.2);
+  }
+}
+</style>
+
+
 <style lang="less" scoped>
 .el-container {
-  width: 72%;
+  width: 70%;
+  max-width: 1500px;
   height: auto;
   margin: 0.5rem auto;
   height: auto;
   background-color: rgba(0, 0, 0, .3);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
 
   .el-header {
     text-align: center;
@@ -283,7 +384,7 @@ export default {
     }
 
     .targetBox {
-      width: 60%;
+      width: 70%;
       margin: 0.5rem auto;
 
       .el-icon-plus {
@@ -310,7 +411,12 @@ export default {
 
       .list-group {
         .list-group-item {
-          padding-top: 15px;
+          padding: 5px;
+          margin-bottom: 10px;
+          background-color: rgba(0, 0, 0, .1);
+          // -webkit-backdrop-filter: blur(10px);
+          // backdrop-filter: blur(10px);
+          border-radius: 10px;
           height: auto;
           line-height: 0.5rem;
           font-size: 0.28rem;

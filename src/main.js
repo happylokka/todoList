@@ -1,8 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import { VueJsonp } from 'vue-jsonp'
-Vue.use(VueJsonp)
-
 import './assets/css/base.css'
 
 import './assets/js/base.js'
