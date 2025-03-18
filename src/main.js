@@ -4,8 +4,6 @@ import './assets/css/base.css'
 
 import './assets/js/base.js'
 
-Vue.config.productionTip = false
-
 new Vue({
   render: h => h(App),
 }).$mount('#app')

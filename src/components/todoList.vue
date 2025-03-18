@@ -97,6 +97,7 @@ export default {
         localStorage.setItem("data", JSON.stringify(this.todolist))
         if (this.todolist.length == 0) {
           this.show = true;
+          this.blurInput();
         }
       },
       deep: true
@@ -125,9 +126,7 @@ export default {
       this.nowTime();
     }, 300);
 
-    if (this.$refs.inputRef) {
-      this.$refs.inputRef.focus();
-    }
+    this.blurInput();
 
   },
   methods: {
@@ -195,8 +194,16 @@ export default {
     isDone (index) {
       this.todolist[index].done = !this.todolist[index].done;
     },
+    blurInput() {
+      this.$nextTick(() => {
+        if (this.$refs.inputRef) {
+          this.$refs.inputRef.focus();
+        }
+      });
+    },
     addTopic () {
       this.show = !this.show;
+      this.blurInput();
     }
   }
 }
@@ -296,7 +303,7 @@ export default {
   margin: 0.5rem auto;
   height: auto;
   background-color: rgba(0, 0, 0, .3);
-  backdrop-filter: blur(10px);
+  // backdrop-filter: blur(10px);
   border-radius: 25px;
 
   .headerBox {
@@ -355,10 +362,9 @@ export default {
 
   .mainBox {
     text-align: center;
-    margin: 0.3rem 0;
+    padding: 0.3rem 0 0.5rem;
     width: 100%;
     height: auto;
-    padding: 0;
     overflow: hidden;
 
     .taskBox {
@@ -415,8 +421,7 @@ export default {
           padding: 5px;
           margin-bottom: 10px;
           background-color: rgba(0, 0, 0, .1);
-          // -webkit-backdrop-filter: blur(10px);
-          // backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
           border-radius: 10px;
           height: auto;
           line-height: 0.5rem;

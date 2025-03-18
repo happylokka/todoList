@@ -5,5 +5,8 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     noInfo: true
+  },
+  configureWebpack: {
+    devtool: 'source-map'
   }
 }
