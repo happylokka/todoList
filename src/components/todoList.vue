@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="todoList" :style="{ backgroundImage: 'url(' + imgUrl + ')' }">
     <div class="containerBox">
       <div class="headerBox">
         <div class="timeBox">
@@ -40,7 +40,7 @@
                   </span>
                 </label>
               </div>
-              <p :class="{ done: todolist[index].done }" @dblclick="isDone(index)">{{ `${index + 1}. ${todo.content}` }}
+              <p :class="{ done: todolist[index].done }" @dblclick="isDone(index)">{{ todo.content }}
               </p>
               <i class="closeBtn" @click="del(index)">×</i>
             </li>
@@ -49,12 +49,16 @@
       </div>
     </div>
     <p class="author">CREATED BY ALOKKA</p>
+    <FloatBall v-if="showBall" /> 
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+import FloatBall from './FloatBall.vue'
 export default {
   name: 'todoList',
+  components: { FloatBall },
   data () {
     return {
       date: null,
@@ -89,6 +93,9 @@ export default {
     },
     donenum: function () {
       return this.todolist.filter(item => item && item.done).length
+    },
+    showBall: function () {
+      return this.todolist.some(item => item.done);
     }
   },
   watch: {
@@ -110,6 +117,14 @@ export default {
     },
   },
   created () {
+    axios.get('https://bing.biturl.top/?resolution=UHD&format=json&index=0&mkt=zh-CN')
+        .then(res => {
+          // 假设API返回的是图片URL字符串
+          this.imgUrl = res.data.url;
+        })
+        .catch(error => {
+          console.error('Error fetching Bing wallpaper:', error);
+        })
 
     this.nowTime();
     this.getWeek(new Date());
@@ -209,7 +224,18 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less" scoped>
+.todoList {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  background-size: cover;
+  z-index: -1;
+}
+
 .checkboxBtn {
   width: 10%;
 }
@@ -292,10 +318,6 @@ export default {
     transform: scale(1.2);
   }
 }
-</style>
-
-
-<style lang="less" scoped>
 .containerBox {
   width: 70%;
   max-width: 1500px;
