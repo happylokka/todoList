@@ -52,13 +52,39 @@ export default {
       const checkedInputs = document.querySelectorAll('input[type="checkbox"]:checked');
       const values = Array.from(checkedInputs).map((input, index) => `${index + 1}. ${input.closest('li').querySelector('p').textContent.trim()}`);
       if (values.length > 0) {
-        navigator.clipboard.writeText(values.join('\n')).then(() => {
-          this.showMessage(`复制成功！`);
-        }).catch(err => {
-          console.error('复制失败:', err);
-        });
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'array') {
+          navigator.clipboard.writeText(values.join('\n')).then(() => {
+            this.showMessage(`复制成功！`);
+          }).catch(err => {
+          console.error('Clipboard API 复制失败', err);
+          this.fallbackCopy(values.join('\n')); // 失败时降级
+          });
+        } else {
+          // 不支持 Clipboard API 时直接降级
+          this.fallbackCopy(values.join('\n'));
+        }
       } else {
         this.showMessage('没有选中的项！');
+      }
+    },
+    fallbackCopy(text) {
+      // 创建临时文本框
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed'; // 避免滚动到视图外
+      document.body.appendChild(textarea);
+      textarea.select(); // 选中文本
+      textarea.setSelectionRange(0, text.length); // 兼容移动设备
+
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          this.showMessage(`复制成功！`);
+        }
+      } catch (err) {
+        console.error('复制失败', err);
+      } finally {
+        document.body.removeChild(textarea); // 清理临时元素
       }
     },
     showMessage(msg, type = 'success') {
